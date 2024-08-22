@@ -8,4 +8,3 @@ coverage/
 uploads
 yarn-error.log
 dist
-src/config/gmail.json
