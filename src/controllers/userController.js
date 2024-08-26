@@ -13,7 +13,7 @@ const securePassword = async (password) => {
 
 // Generate OTP
 const generateOTP = () => {
-  return crypto.randomInt(10000, 99999).toString(); // Generate a 6-digit OTP
+  return crypto.randomInt(10000, 99999).toString(); // Generate a 5-digit OTP
 };
 
 // Send OTP via email
@@ -72,6 +72,9 @@ const signupController = async (request, response) => {
       password: hashedPassword,
       phone,
       role,
+      // const otp = generateOTP();
+      otp: 12345,
+      otpExpires: Date.now() + 5 * 60 * 1000, // OTP expires in 5 minutes
     });
 
     const result = await new_user.save();
@@ -79,7 +82,6 @@ const signupController = async (request, response) => {
     response.status(201).send({
       status: true,
       message: "Account created successfully.",
-      result,
     });
   } catch (error) {
     response
