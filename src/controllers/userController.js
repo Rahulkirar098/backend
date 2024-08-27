@@ -82,6 +82,7 @@ const signupController = async (request, response) => {
     response.status(201).send({
       status: true,
       message: "Account created successfully.",
+      result
     });
   } catch (error) {
     response
