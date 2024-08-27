@@ -104,12 +104,6 @@ const loginController = async (request, response) => {
   // Find the user and include password field
   const authUser = await User_Schema.findOne({ email }).select("+password");
 
-  // Check if password matches.
-  const isPasswordMatch = await bcrypt.compare(password, authUser.password);
-
-  // Create Token.
-  const token = jwt.sign({ _id: authUser._id }, process.env.JWT_KEY);
-
   try {
     if (!authUser) {
       return response.status(400).send({
@@ -120,13 +114,19 @@ const loginController = async (request, response) => {
 
     // If user is not verified with otp
     if (authUser.userVerified === false) {
-      return response.status(400).send({
-        status: false,
+      return response.status(200).send({
+        status: true,
         message:
           "To complete your account verification, please enter the OTP sent to your email address.",
         userVerified: false,
       });
     }
+
+    // Check if password matches.
+    const isPasswordMatch = await bcrypt.compare(password, authUser.password);
+
+    // Create Token.
+    const token = jwt.sign({ _id: authUser._id }, process.env.JWT_KEY);
 
     if (isPasswordMatch) {
       return response.status(200).send({
