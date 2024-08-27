@@ -82,7 +82,7 @@ const signupController = async (request, response) => {
     response.status(201).send({
       status: true,
       message: "Account created successfully.",
-      result
+      result,
     });
   } catch (error) {
     response
@@ -124,6 +124,7 @@ const loginController = async (request, response) => {
         status: false,
         message:
           "To complete your account verification, please enter the OTP sent to your email address.",
+        userVerified: false,
       });
     }
 
@@ -137,6 +138,7 @@ const loginController = async (request, response) => {
           email: authUser.email,
           phone: authUser.phone,
           role: authUser.role,
+          userVerified: authUser.userVerified,
         },
         token,
       });
