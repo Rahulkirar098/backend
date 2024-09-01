@@ -3,6 +3,8 @@ const {
   signupController,
   generateOTPController,
   verifyOTPController,
+  userDetails,
+  getUserById
 } = require("./userController");
 
 module.exports = {
@@ -10,4 +12,6 @@ module.exports = {
   loginController,
   generateOTPController,
   verifyOTPController,
+  userDetails,
+  getUserById
 };

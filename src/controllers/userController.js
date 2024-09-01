@@ -249,9 +249,50 @@ const verifyOTPController = async (request, response) => {
   }
 };
 
+const userDetails = async (request, response) => {
+  try {
+    const email = request?.user?.email;
+    let authUser = await User_Schema.findOne({ email });
+
+    if (!authUser) {
+      return response.status(400).send({
+        success: false,
+        message: "user not found or somethink is wrong please try again",
+      });
+    }
+
+    response.status(200).send({
+      status: true,
+      result: authUser,
+    });
+  } catch (error) {
+    response.status(500).send({
+      status: false,
+      message: "Internal Server Error.",
+    });
+  }
+};
+
+const getUserById = async (request, response) => {
+  try {
+    const userId = request?.params?.id;
+    let authUser = await User_Schema.findOne({ _id: userId });
+    return response.status(200).send({
+      status: true,
+      result: authUser,
+    });
+  } catch (error) {
+    return response
+      .status(500)
+      .send({ success: false, message: error?.message });
+  }
+};
+
 module.exports = {
   signupController,
   loginController,
   generateOTPController,
   verifyOTPController,
+  userDetails,
+  getUserById
 };
