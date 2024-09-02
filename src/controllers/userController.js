@@ -183,7 +183,6 @@ const generateOTPController = async (request, response) => {
     response.status(200).send({
       status: true,
       message: "OTP has been sent to your email.",
-      user,
     });
   } catch (error) {
     response.status(500).send({
@@ -249,7 +248,7 @@ const verifyOTPController = async (request, response) => {
   }
 };
 
-const userDetails = async (request, response) => {
+const userDetailsController = async (request, response) => {
   try {
     const email = request?.user?.email;
     let authUser = await User_Schema.findOne({ email });
@@ -273,7 +272,7 @@ const userDetails = async (request, response) => {
   }
 };
 
-const getUserById = async (request, response) => {
+const getUserByIdController = async (request, response) => {
   try {
     const userId = request?.params?.id;
     let authUser = await User_Schema.findOne({ _id: userId });
@@ -288,11 +287,129 @@ const getUserById = async (request, response) => {
   }
 };
 
+const userUpdateController = async (request, response) => {
+  try {
+    const userId = request?.user?.id;
+
+    let result = await User_Schema.updateOne({ _id: userId }, request.body);
+
+    if (result.acknowledged == false) {
+      return response.status(404).send({
+        status: false,
+        message: "Profile is not updated yet, you did wrong.",
+      });
+    }
+    let authUser = await User_Schema.findOne({ _id: userId });
+    response.status(200).send({
+      status: true,
+      message: "User profile updated",
+      result: authUser,
+    });
+  } catch (error) {
+    return response
+      .status(500)
+      .send({ success: false, message: error?.message });
+  }
+};
+
+const verifyOTPForResetPasswordController = async (request, response) => {
+  try {
+    const { email, otp } = request.body;
+
+    // Validate input
+    if (!email || !otp) {
+      return response.status(400).send({
+        status: false,
+        message: "Email and OTP are required.",
+      });
+    }
+
+    // Find user
+    const user = await User_Schema.findOne({ email });
+
+    if (!user) {
+      return response.status(404).send({
+        status: false,
+        message: "User not found.",
+      });
+    }
+
+    // Check OTP validity
+    if (user.otp !== otp) {
+      return response.status(400).send({
+        status: false,
+        message: "Invalid OTP.",
+      });
+    }
+
+    // Check if OTP is expired
+    if (Date.now() > user.otpExpires) {
+      return response.status(400).send({
+        success: false,
+        message: "OTP has expired.",
+      });
+    }
+
+    // OTP is valid, clear OTP and expiry
+    user.otp = undefined;
+    user.otpExpires = undefined;
+    await user.save();
+
+    response.status(200).send({
+      status: true,
+      message: "OTP verified successfully.",
+    });
+  } catch (error) {
+    return response
+      .status(500)
+      .send({ success: false, message: error?.message });
+  }
+};
+
+const resetPasswordController = async (request, response) => {
+  try {
+    const { password, email } = request.body;
+    let authUser = await User_Schema.findOne({ email });
+
+    if (!authUser) {
+      return response.status(400).send({
+        success: false,
+        message: "Email id is not fount.",
+      });
+    }
+    // Hash the password
+    const hashedPassword = await securePassword(password);
+
+    let result = await User_Schema.updateOne(
+      { _id: authUser._id },
+      { password: hashedPassword }
+    );
+
+    if (result.acknowledged == false) {
+      return response.status(404).send({
+        status: false,
+        message: "You did wrong.",
+      });
+    }
+    response.status(200).send({
+      status: true,
+      message: "Password reset successfully",
+    });
+  } catch (error) {
+    return response
+      .status(500)
+      .send({ success: false, message: error?.message });
+  }
+};
+
 module.exports = {
   signupController,
   loginController,
   generateOTPController,
   verifyOTPController,
-  userDetails,
-  getUserById
+  userDetailsController,
+  getUserByIdController,
+  userUpdateController,
+  verifyOTPForResetPasswordController,
+  resetPasswordController,
 };

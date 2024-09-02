@@ -7,8 +7,11 @@ const {
   loginController,
   generateOTPController,
   verifyOTPController,
-  userDetails,
-  getUserById
+  userDetailsController,
+  getUserByIdController,
+  userUpdateController,
+  verifyOTPForResetPasswordController,
+  resetPasswordController
 } = require("../controllers");
 
 const authUserRoute = express.Router();
@@ -17,8 +20,13 @@ authUserRoute.route("/signup").post(signupController);
 authUserRoute.route("/login").post(loginController);
 authUserRoute.route("/generateOTP").post(generateOTPController);
 authUserRoute.route("/verifyOTP").post(verifyOTPController);
-authUserRoute.route("/user").get(isAuthorized, userDetails);
-authUserRoute.route("/user/:id").get(isAuthorized, getUserById);
+authUserRoute.route("/user").get(isAuthorized, userDetailsController);
+authUserRoute.route("/user/:id").get(isAuthorized, getUserByIdController);
+authUserRoute.route("/user").put(isAuthorized, userUpdateController);
+authUserRoute.route("/resetOTPVerify").post(verifyOTPForResetPasswordController);
+authUserRoute.route("/resetPassword").post(resetPasswordController);
+
+
 
 const authUser = app.use("/", authUserRoute);
 

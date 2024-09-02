@@ -9,7 +9,7 @@ const isAuthorized = async (request, response, next) => {
     if (!token) {
       return response.status(401).send({
         status: false,
-        message: "The user is not logged in or is not authenticated.",
+        message: "The user is not logged in.",
       });
     }
 
