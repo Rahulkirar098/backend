@@ -291,11 +291,7 @@ const userUpdateController = async (request, response) => {
   try {
     const userId = request?.user?.id;
 
-    console.log(userId ,"===@@@ user id")
-
     let result = await User_Schema.updateOne({ _id: userId }, request.body);
-
-    console.log(result, "===@@@ result")
 
     if (result.acknowledged == false) {
       return response.status(404).send({
@@ -310,7 +306,6 @@ const userUpdateController = async (request, response) => {
       result: authUser,
     });
   } catch (error) {
-    console.log(error,"===@@@ error")
     return response
       .status(500)
       .send({ success: false, message: error?.message });
