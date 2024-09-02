@@ -8,8 +8,7 @@ const {
   generateOTPController,
   verifyOTPController,
   userDetails,
-  getUserById,
-  logout
+  getUserById
 } = require("../controllers");
 
 const authUserRoute = express.Router();
