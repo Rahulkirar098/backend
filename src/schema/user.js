@@ -40,6 +40,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "english",
     },
+    countryCode: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
