@@ -10,6 +10,10 @@ const {
   resetPasswordController
 } = require("./userController");
 
+const {
+  checkURL
+} = require("./urlChecker");
+
 module.exports = {
   signupController,
   loginController,
@@ -19,5 +23,6 @@ module.exports = {
   getUserByIdController,
   userUpdateController,
   verifyOTPForResetPasswordController,
-  resetPasswordController
+  resetPasswordController,
+  checkURL
 };

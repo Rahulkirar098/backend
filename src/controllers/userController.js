@@ -101,8 +101,13 @@ const loginController = async (request, response) => {
     });
   }
 
+  // Convert email to lowercase
+  const lowerCaseEmail = email.toLowerCase();
+
   // Find the user and include password field
-  const authUser = await User_Schema.findOne({ email }).select("+password");
+  const authUser = await User_Schema.findOne({ email: lowerCaseEmail }).select(
+    "+password"
+  );
 
   try {
     if (!authUser) {
@@ -155,6 +160,8 @@ const loginController = async (request, response) => {
 const generateOTPController = async (request, response) => {
   const { email } = request.body;
   try {
+    // Convert email to lowercase
+    const lowerCaseEmail = email.toLowerCase();
     // Validate email
     if (!email) {
       return res.status(400).send({
@@ -164,7 +171,7 @@ const generateOTPController = async (request, response) => {
     }
 
     // Check if user exists
-    const user = await User_Schema.findOne({ email });
+    const user = await User_Schema.findOne({ email: lowerCaseEmail });
     if (!user) {
       return res.status(404).send({
         status: false,
@@ -196,6 +203,9 @@ const verifyOTPController = async (request, response) => {
   const { email, otp } = request.body;
 
   try {
+    // Convert email to lowercase
+    const lowerCaseEmail = email.toLowerCase();
+
     // Validate input
     if (!email || !otp) {
       return response.status(400).send({
@@ -205,7 +215,7 @@ const verifyOTPController = async (request, response) => {
     }
 
     // Find user
-    const user = await User_Schema.findOne({ email });
+    const user = await User_Schema.findOne({ email: lowerCaseEmail });
 
     if (!user) {
       return response.status(404).send({
@@ -251,7 +261,11 @@ const verifyOTPController = async (request, response) => {
 const userDetailsController = async (request, response) => {
   try {
     const email = request?.user?.email;
-    let authUser = await User_Schema.findOne({ email });
+
+    // Convert email to lowercase
+    const lowerCaseEmail = email.toLowerCase();
+
+    let authUser = await User_Schema.findOne({ email: lowerCaseEmail });
 
     if (!authUser) {
       return response.status(400).send({
@@ -316,6 +330,9 @@ const verifyOTPForResetPasswordController = async (request, response) => {
   try {
     const { email, otp } = request.body;
 
+    // Convert email to lowercase
+    const lowerCaseEmail = email.toLowerCase();
+
     // Validate input
     if (!email || !otp) {
       return response.status(400).send({
@@ -325,7 +342,7 @@ const verifyOTPForResetPasswordController = async (request, response) => {
     }
 
     // Find user
-    const user = await User_Schema.findOne({ email });
+    const user = await User_Schema.findOne({ email: lowerCaseEmail });
 
     if (!user) {
       return response.status(404).send({
@@ -369,7 +386,9 @@ const verifyOTPForResetPasswordController = async (request, response) => {
 const resetPasswordController = async (request, response) => {
   try {
     const { password, email } = request.body;
-    let authUser = await User_Schema.findOne({ email });
+    // Convert email to lowercase
+    const lowerCaseEmail = email.toLowerCase();
+    let authUser = await User_Schema.findOne({ email: lowerCaseEmail });
 
     if (!authUser) {
       return response.status(400).send({
