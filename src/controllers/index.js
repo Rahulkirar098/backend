@@ -11,6 +11,10 @@ const {
 } = require("./userController");
 
 const {
+createAppReviewController
+} = require("./appReviewController");
+
+const {
   checkURL
 } = require("./urlChecker");
 
@@ -24,5 +28,6 @@ module.exports = {
   userUpdateController,
   verifyOTPForResetPasswordController,
   resetPasswordController,
-  checkURL
+  checkURL,
+  createAppReviewController
 };
