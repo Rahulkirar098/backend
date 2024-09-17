@@ -3,11 +3,11 @@ const { AppReview_Schema } = require("../schema");
 
 const createAppReviewController = async (req, res) => {
   try {
-    const { stars, title, description } = req.body;
-    if (!stars || !title || !description) {
+    const { stars, title, description, anonymous } = req.body;
+    if (!stars) {
       return res.status(400).send({
         status: false,
-        message: "All fields (stars, title, and description) are required.",
+        message: "Atleast stars field are required.",
       });
     }
 
@@ -15,6 +15,7 @@ const createAppReviewController = async (req, res) => {
       stars,
       title,
       description,
+      anonymous
     });
 
     const result = await newReview.save();
